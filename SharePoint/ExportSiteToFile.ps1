@@ -24,7 +24,7 @@ param (
 )
 
 try{
-    #xml or pnp
+    #xml(default) or pnp
     $FileName = $($SiteUrl).TrimEnd("/").Split("/")[-1]
     $OriginalSiteFileName = "$($FileName).xml"
 
