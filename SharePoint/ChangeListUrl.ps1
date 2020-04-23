@@ -30,13 +30,23 @@ param (
     [Parameter(Mandatory=$True, Position=3)]
     [string] $NewListUrl
 )
-  
-#Connect to PNP Online
-Connect-PnPOnline -Url $($SiteUrl) -UseWebLogin
+
+try{  
+    #Connect to PNP Online
+    Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
+    Connect-PnPOnline -Url $($SiteUrl) -UseWebLogin
  
-#Get the List
-$List= Get-PnPList -Identity $($ListName) -Includes RootFolder
+    #Get the List
+    Write-Host "Getting identity from list/library '$($ListName)'..." -ForegroundColor Cyan
+    $List= Get-PnPList -Identity $($ListName) -Includes RootFolder
  
-#sharepoint online powershell change list url
-$List.Rootfolder.MoveTo($($NewListUrl))
-Invoke-PnPQuery
+    #sharepoint online powershell change list url
+    Write-Host "Changing list/library url to '$($NewListUrl)'..." -ForegroundColor Cyan
+    $List.Rootfolder.MoveTo($($NewListUrl))
+    Invoke-PnPQuery
+}
+catch{
+}
+
+Write-Host "Disconnecting..." -ForegroundColor Cyan
+Disconnect-PnPOnline
