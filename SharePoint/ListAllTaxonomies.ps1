@@ -86,6 +86,7 @@ try {
     }
 }
 catch {
+    write-host "Error: $($_.Exception.Message)" -foregroundcolor Red
 }
 
 Write-Host "Disconnecting..." -ForegroundColor Cyan

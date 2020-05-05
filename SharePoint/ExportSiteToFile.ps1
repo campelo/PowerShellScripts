@@ -19,11 +19,11 @@ Url from original site collection or sub-site. Ex: "https://MyCompany.sharepoint
 
 #>
 param (
-    [Parameter(Mandatory=$True, Position=1)]
+    [Parameter(Mandatory = $True, Position = 1)]
     [string] $SiteUrl
 )
 
-try{
+try {
     #xml(default) or pnp
     $FileName = $($SiteUrl).TrimEnd("/").Split("/")[-1]
     $OriginalSiteFileName = "$($FileName).xml"
@@ -35,7 +35,8 @@ try{
     #Get-PnPProvisioningTemplate -Out .\$OriginalSiteFileName -PersistBrandingFiles -ExcludeHandlers SiteSecurity, PropertyBagEntries, Navigation
     Get-PnPProvisioningTemplate -Out .\$OriginalSiteFileName -PersistBrandingFiles -Handlers All
 }
-catch{
+catch {
+    write-host "Error: $($_.Exception.Message)" -foregroundcolor Red
 }
 
 Write-Host "Disconnecting..." -ForegroundColor Cyan

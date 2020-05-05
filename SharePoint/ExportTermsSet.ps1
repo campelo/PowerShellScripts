@@ -24,15 +24,15 @@ Termset name. Ex: "USA"
 #>
 
 param (
-    [Parameter(Mandatory=$True, Position=1)]
+    [Parameter(Mandatory = $True, Position = 1)]
     [string] $SiteUrl,
-    [Parameter(Mandatory=$True, Position=2)]
+    [Parameter(Mandatory = $True, Position = 2)]
     [string] $TermGroup,
-    [Parameter(Mandatory=$True, Position=3)]
+    [Parameter(Mandatory = $True, Position = 3)]
     [string] $TermSet
 )
 
-try{
+try {
     [System.Collections.ArrayList] $completeTerm = [System.Collections.ArrayList]::new()
 
     #File name
@@ -60,13 +60,14 @@ try{
                     "Level 2 Term"  = $($termStoreChild).Name;
                 }	
             }
-         }
+        }
     }
     
     Write-Host "Saving file $($FileName)..." -ForegroundColor Cyan
     $completeTerm | Select-Object "Term Set Name", "Term Set Description", "LCID", "Available for Tagging", "Term Description", "Level 1 Term", "Level 2 Term", "Level 3 Term", "Level 4 Term" | Export-Csv ".\$($FileName)" -NoTypeInformation
 }
-catch{
+catch {
+    write-host "Error: $($_.Exception.Message)" -foregroundcolor Red
 }
 
 Write-Host "Disconnecting..." -ForegroundColor Cyan
