@@ -23,29 +23,30 @@ New list's url. Ex: "MyList"
 
 #>
 param (
-    [Parameter(Mandatory=$True, Position=1)]
+    [Parameter(Mandatory = $True, Position = 1)]
     [string] $SiteUrl,
-    [Parameter(Mandatory=$True, Position=2)]
+    [Parameter(Mandatory = $True, Position = 2)]
     [string] $ListName,
-    [Parameter(Mandatory=$True, Position=3)]
+    [Parameter(Mandatory = $True, Position = 3)]
     [string] $NewListUrl
 )
 
-try{  
+try {  
     #Connect to PNP Online
     Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
     Connect-PnPOnline -Url $($SiteUrl) -UseWebLogin
  
     #Get the List
     Write-Host "Getting identity from list/library '$($ListName)'..." -ForegroundColor Cyan
-    $List= Get-PnPList -Identity $($ListName) -Includes RootFolder
+    $List = Get-PnPList -Identity $($ListName) -Includes RootFolder
  
     #sharepoint online powershell change list url
     Write-Host "Changing list/library url to '$($NewListUrl)'..." -ForegroundColor Cyan
     $List.Rootfolder.MoveTo($($NewListUrl))
     Invoke-PnPQuery
 }
-catch{
+catch {
+    write-host "Error: $($_.Exception.Message)" -foregroundcolor Red
 }
 
 Write-Host "Disconnecting..." -ForegroundColor Cyan
