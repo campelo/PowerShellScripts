@@ -22,7 +22,7 @@ Term group name. Ex: "Country"
 Termset name. Ex: "USA"
 
 #>
-
+[CmdletBinding()]
 param (
     [Parameter(Mandatory = $True, Position = 1)]
     [string] $SiteUrl,

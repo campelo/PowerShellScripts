@@ -19,6 +19,7 @@ Site collection full url. Ex: "https://MyCompany.sharepoint.com/sites/MySiteColl
 Term's id. Ex: "09c963d1-662e-4fb9-a8e3-58b52dc7bd83"
 
 #>
+[CmdletBinding()]
 param (
     [Parameter(Mandatory = $True, Position = 1)]
     [string] $SiteUrl,

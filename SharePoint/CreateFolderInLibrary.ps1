@@ -17,6 +17,7 @@ List or library full url. Ex: "https://MyCompany.sharepoint.com/sites/MySiteColl
 New folder's name. Ex: "NewFolder"
 
 #>
+[CmdletBinding()]
 param (
   [Parameter(Mandatory = $True, Position = 1)]
   [string] $FullListUrl,

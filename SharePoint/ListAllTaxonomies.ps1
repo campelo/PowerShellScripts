@@ -1,4 +1,5 @@
-﻿param (
+﻿[CmdletBinding()]
+param (
     [Parameter(Mandatory = $True, Position = 1)]
     [string] $SiteUrl
 )

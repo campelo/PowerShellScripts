@@ -22,6 +22,7 @@ List's name. Ex: "My List"
 New list's url. Ex: "MyList"
 
 #>
+[CmdletBinding()]
 param (
     [Parameter(Mandatory = $True, Position = 1)]
     [string] $SiteUrl,

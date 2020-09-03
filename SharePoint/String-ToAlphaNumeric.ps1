@@ -19,7 +19,7 @@ function String-ToAlphaNumeric {
 .NOTES
   
 #>
-  [CMdletBinding()]
+  [CmdletBinding()]
   PARAM
   (
     [ValidateNotNullOrEmpty()]

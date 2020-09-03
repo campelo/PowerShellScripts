@@ -18,6 +18,7 @@ About ProvisioningTemplate: https://docs.microsoft.com/en-us/powershell/module/s
 Url from original site collection or sub-site. Ex: "https://MyCompany.sharepoint.com/sites/MySite"
 
 #>
+[CmdletBinding()]
 param (
     [Parameter(Mandatory = $True, Position = 1)]
     [string] $SiteUrl
