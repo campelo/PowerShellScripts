@@ -51,7 +51,7 @@
     }
 
     #Combine the new string chars
-	$result = $($NewString -as [string])
+	$result = $($NewString -as [string]).Trim()
     write-Verbose "$($result)" # -foregroundcolor Green 
   }
   Catch {
