@@ -1,4 +1,4 @@
-function String-ToAlphaNumeric {
+##function String-ToAlphaNumeric {
   <#
 .SYNOPSIS
   This function will remove the diacritics (accents) characters from a string.
@@ -6,7 +6,7 @@ function String-ToAlphaNumeric {
 .DESCRIPTION
   This function will remove the diacritics (accents) characters from a string.
 
-.PARAMETER String
+.PARAMETER MainString
   Specifies the String(s) on which the diacritics need to be removed
 
 .PARAMETER NormalizationForm
@@ -14,8 +14,8 @@ function String-ToAlphaNumeric {
   https://msdn.microsoft.com/en-us/library/system.text.normalizationform(v=vs.110).aspx
 
 .EXAMPLE
-  PS C:\> Remove-StringDiacritic "L'été de Raphaël"
-  LetedeRaphael
+  PS C:\> String-ToAlphaNumeric "L'été de Raphaël-autre"
+  LEteDeRaphaelAutre
 .NOTES
   
 #>
@@ -28,7 +28,8 @@ function String-ToAlphaNumeric {
     [System.Text.NormalizationForm]$NormalizationForm = "FormD"
   )
 
-  Write-Verbose -Message "$MainString"
+  $result
+  $toUpper = $true
   try {
     # Normalize the String
     $Normalized = $MainString.Normalize($NormalizationForm)
@@ -38,14 +39,23 @@ function String-ToAlphaNumeric {
     $normalized.ToCharArray() |
     ForEach-Object -Process {
       if ([Globalization.CharUnicodeInfo]::GetUnicodeCategory($psitem) -eq [Globalization.UnicodeCategory]::LowercaseLetter -or [Globalization.CharUnicodeInfo]::GetUnicodeCategory($psitem) -eq [Globalization.UnicodeCategory]::UppercaseLetter -or [Globalization.CharUnicodeInfo]::GetUnicodeCategory($psitem) -eq [Globalization.UnicodeCategory]::DecimalDigitNumber) {
-        [void]$NewString.Append($psitem)
-      }
+		if($toUpper){
+			[void]$NewString.Append(($psitem -as [string]).ToUpper())
+			$toUpper = $false
+		} else {
+			[void]$NewString.Append($psitem)
+		}
+      } elseif ([Globalization.CharUnicodeInfo]::GetUnicodeCategory($psitem) -ne [Globalization.UnicodeCategory]::NonSpacingMark) {
+		$toUpper = $true
+	  }
     }
 
     #Combine the new string chars
-    write-host "$($NewString -as [string])" -foregroundcolor Green 
+	$result = $($NewString -as [string])
+    write-Verbose "$($result)" # -foregroundcolor Green 
   }
   Catch {
     write-host "Error: $($_.Exception.Message)" -foregroundcolor Red
   }
-}
+  return $($result)
+##}
