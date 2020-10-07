@@ -8,6 +8,7 @@ This script will change a sharepoint list's url to avoid no-friendly chars. For 
 
 .EXAMPLE
 .\ChangeListUrl.ps1 [SiteUrl] [ListName] [NewListUrl]
+.\ChangeListUrl.ps1 "https://MyCompany.sharepoint.com/sites/MySiteCollection" "My List" "MyList"
 
 .NOTES
 Source: https://www.sharepointdiary.com/2017/09/sharepoint-online-change-list-document-library-url-using-powershell.html#ixzz6KRtYz1tm

@@ -1,0 +1,3 @@
+# exclude all .xlsx files from SharePoint folder except empty.xlsx
+/SharePoint/*.xlsx
+!/SharePoint/empty.xlsx
