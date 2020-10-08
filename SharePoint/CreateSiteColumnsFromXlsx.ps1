@@ -26,26 +26,43 @@ param (
 	[string] $FileName
 )
 
+$nl = [Environment]::NewLine
+#To store all created fields...
+$htCreatedFields = @{}
+$htFieldsToAdd = @{}
+#To store all no-created fields...
+$arrNoCreatedFields = @()
+
 try {
 	#Installing PSExcel module
 	Install-Module PSExcel
-	Get-Command -Module PSExcel
+	Get-Command -Module PSExcel | Out-Null
 	
 	#Connect to PNP Online
 	Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
 	Connect-PnPOnline -Url "$($SiteUrl)" -UseWebLogin
+
+	$ctx = Get-PnPContext
 	
 	$objExcel = New-Excel -Path "$($FileName)"
 	$Worksheet = $objExcel | Get-Worksheet -Name "Metadata"
 	$totalNoOfRecords = $Worksheet.Dimension.Rows
-	# $totalNoOfItems = $totalNoOfRecords - 1  
-	$rowNo, $colType = 3, 1  
-	$rowNo, $colDisplayName = 3, 2  
+	$totalNoOfColumns = $Worksheet.Dimension.Columns
+	$totalNoOfLists = $totalNoOfColumns - 6
+	$totalNoOfItems = $totalNoOfRecords - 1  
+	$rowNo = 3
+	$colType = 1  
+	$colDisplayName = 2
+	$rowList = 2
+	$colList = 6
+
 	if ($totalNoOfRecords -gt 1) {  
 		$existingFields = Get-PnPField
-		#Loop to get values from excel file  
-		for ($i = 1; $i -le $totalNoOfRecords - 1; $i++) {
-			$columnDisplayName = $WorkSheet.Cells.Item($rowNo + $i, $colDisplayName).text.Trim()  
+		
+		Write-Host "Creating field(s)..." -ForegroundColor Cyan
+		#Getting field's name and type...  
+		for ($i = 1; $i -le $totalNoOfItems; $i++) {
+			$columnDisplayName = $WorkSheet.Cells.Item($rowNo + $i, $colDisplayName).text.Trim()
 			$columnType = $WorkSheet.Cells.Item($rowNo + $i, $colType).text.Trim()
 			if (![string]::IsNullOrEmpty($columnType) -and ![string]::IsNullOrEmpty($columnDisplayName)) {	
 				$columnInternalName = & .\String-ToAlphaNumeric.ps1 -MainString "$($columnDisplayName)"
@@ -58,19 +75,93 @@ try {
 					# -or ($_.Title -eq $columnDisplayName) 
 				}
 				if ($NULL -ne $newField) {
-					Write-host "Column $($columnDisplayName) already exists in the List!" -foregroundcolor Yellow
+					$arrNoCreatedFields += $columnDisplayName
 				}
 				else {
-					#Adding field
+					#Adding new field
 					Write-Verbose "Creating column '$($columnDisplayName)' with internal name: '$($columnInternalName)' ..."
-					Add-PnPField -InternalName "$($columnInternalName)" -DisplayName "$($columnDisplayName)" -Type "$($columnType)"
+					#Result of a field creation...
+					$fResult = Add-PnPField -InternalName "$($columnInternalName)" -DisplayName "$($columnDisplayName)" -Type "$($columnType)"
+					if ($NULL -eq $fResult -or $NULL -eq $fResult.Id) {
+						$arrNoCreatedFields += $columnDisplayName
+					}
+					else {
+						$htCreatedFields.Add($columnDisplayName, $fResult.Id)
+					}
 				}
 			}
 		}  
+		#Are there created fields?...
+		if ($htCreatedFields.Count -gt 0) {
+			Write-Verbose "Created fields: $($nl) $($htCreatedFields.GetEnumerator().ForEach( { "$($_.Value) = $($_.Name) $($nl)" }))"
+		}
+
+		#Are there no-created fields?...
+		if ($arrNoCreatedFields -gt 0) {
+			Write-Host "No-created fields:" -BackgroundColor White -ForegroundColor Red
+			Write-Host $($arrNoCreatedFields -join $nl) -BackgroundColor Red -ForegroundColor White	
+		}
+
+		for ($($i = 0; $listTemplate = "DocumentLibrary"; $listOrLib="library(ies)"; $vName="Tous les documents"; $firstColView="Nom"); 
+				$i -lt 2; 
+				$($i++; $listTemplate = "GenericList"; $listOrLib="list(s)"; $vName=""; $firstColView="Titre")) {
+			
+			Write-Host "Creating $($listOrLib)..." -ForegroundColor Cyan
+
+			#Getting libraries and lists...
+			for ($col = 1; $col -le $totalNoOfLists; $col++) {
+				$listDisplayName = $WorkSheet.Cells.Item($rowList + $i, $colList + $col).text.Trim()
+
+				#Should we create list/library?...
+				if (![string]::IsNullOrEmpty($listDisplayName)) {	
+					$listInternalName = & .\String-ToAlphaNumeric.ps1 -MainString "$($listDisplayName)"
+					$listInternalName = "$($listInternalName)".Trim()
+
+					#Creating list...
+					Write-Verbose "Creating $($listOrLib) $($listDisplayName)"
+					New-PnPList -Title "$($listDisplayName)" -Url "lists/$($listInternalName)" -Template "$($listTemplate)" -OnQuickLaunch
+					
+					$l = Get-PnPList -Identity "lists/$($listInternalName)"
+
+					for ($j = 1; $j -le $totalNoOfItems; $j++) {
+						$fIndex = $WorkSheet.Cells.Item($rowNo + $j, $colList + $col).text.Trim()
+						if(![string]::IsNullOrEmpty($fIndex))
+						{
+							$columnDisplayName = $WorkSheet.Cells.Item($rowNo + $j, $colDisplayName).text.Trim()
+							$columnInternalName = & .\String-ToAlphaNumeric.ps1 -MainString "$($columnDisplayName)"
+							$columnInternalName = "$($columnInternalName)".Trim()
+							$f = Get-PnPField -Identity "$($columnInternalName)"
+							if($NULL -eq $f){
+								Write-Host "Column $($columnInternalName) not found. Trying to use '$($columnDisplayName)' column instead." -ForegroundColor Yellow
+								$f = Get-PnPField -Identity "$($columnDisplayName)"
+							}
+							$htFieldsToAdd.Add($fIndex -as [int], $f)
+						}
+					}
+					
+					$viewColumns = @()
+					$viewColumns += $firstColView
+
+					$($htFieldsToAdd.GetEnumerator() | Sort-Object -Property key).ForEach({ 
+						$l.Fields.Add($_.Value) | Out-Null 
+						$viewColumns += "$($_.Value.Title)"
+					})
+					$l.Update()
+					if(![string]::IsNullOrEmpty($vName)){
+						Set-PnPView -List "lists/$($listInternalName)" -Identity "$($vName)" -Fields $viewColumns
+					} else {
+						$lAux = Get-PnPView -List "lists/$($listInternalName)"
+						Set-PnPView -List "lists/$($listInternalName)" -Identity "$($lAux.Id)" -Fields $viewColumns
+					}
+					$htFieldsToAdd.Clear() | Out-Null
+				}
+			}
+		}
 	}
+	$ctx.ExecuteQuery()
 }
 catch {
-	write-host "Error: $($_.Exception.Message)" -foregroundcolor Red
+	Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 Write-Host "Disconnecting..." -ForegroundColor Cyan
