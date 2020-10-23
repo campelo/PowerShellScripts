@@ -27,7 +27,6 @@ param (
 	[string] $FileName
 )
 
-$nl = [Environment]::NewLine
 $htFieldsToAdd = @{}
 
 try {
