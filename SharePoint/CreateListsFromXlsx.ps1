@@ -52,9 +52,9 @@ try {
 	$colList = 6
 
 	if ($totalNoOfRecords -gt 1) {  
-		for ($($i = 0; $listTemplate = "DocumentLibrary"; $listOrLib="library(ies)"; $vName="Tous les documents"; $firstColView="Nom"); 
-				$i -lt 2; 
-				$($i++; $listTemplate = "GenericList"; $listOrLib="list(s)"; $vName=""; $firstColView="Titre")) {
+		for ($($i = 0; $listTemplate = "DocumentLibrary"; $listOrLib = "library(ies)"; $vName = "Tous les documents"; $firstColView = "Nom"); 
+			$i -lt 2; 
+			$($i++; $listTemplate = "GenericList"; $listOrLib = "list(s)"; $vName = ""; $firstColView = "Titre")) {
 			
 			Write-Host "Creating $($listOrLib)..." -ForegroundColor Cyan
 
@@ -75,13 +75,12 @@ try {
 
 					for ($j = 1; $j -le $totalNoOfItems; $j++) {
 						$fIndex = $WorkSheet.Cells.Item($rowNo + $j, $colList + $col).text.Trim()
-						if(![string]::IsNullOrEmpty($fIndex))
-						{
+						if (![string]::IsNullOrEmpty($fIndex)) {
 							$columnDisplayName = $WorkSheet.Cells.Item($rowNo + $j, $colDisplayName).text.Trim()
 							$columnInternalName = & .\String-ToAlphaNumeric.ps1 -MainString "$($columnDisplayName)"
 							$columnInternalName = "$($columnInternalName)".Trim()
 							$f = Get-PnPField -Identity "$($columnInternalName)"
-							if($NULL -eq $f){
+							if ($NULL -eq $f) {
 								Write-Host "Column $($columnInternalName) not found. Trying to use '$($columnDisplayName)' column instead." -ForegroundColor Yellow
 								$f = Get-PnPField -Identity "$($columnDisplayName)"
 							}
@@ -92,18 +91,19 @@ try {
 					$viewColumns = @()
 					$viewColumns += $firstColView
 
-					$($htFieldsToAdd.GetEnumerator() | Sort-Object -Property key).ForEach({ 
-						$l.Fields.Add($_.Value) | Out-Null
-						$viewColumns += "$($_.Value.InternalName)"
-					})
+					$($htFieldsToAdd.GetEnumerator() | Sort-Object -Property key).ForEach( { 
+							$l.Fields.Add($_.Value) | Out-Null
+							$viewColumns += "$($_.Value.InternalName)"
+						})
 					$l.Update()
 					#$bugFix to suppress those message errors. 
 					#Sources
 					#https://github.com/pnp/PnP-PowerShell/issues/722
 					#https://techcommunity.microsoft.com/t5/sharepoint-developer/add-spofile-fails-with-format-default-the-collection-has-not/m-p/14323
-					if(![string]::IsNullOrEmpty($vName)){
+					if (![string]::IsNullOrEmpty($vName)) {
 						$bugFix = Set-PnPView -List "lists/$($listInternalName)" -Identity "$($vName)" -Fields $viewColumns
-					} else {
+					}
+					else {
 						$lAux = Get-PnPView -List "lists/$($listInternalName)"
 						$bugFix = Set-PnPView -List "lists/$($listInternalName)" -Identity $lAux.Id -Fields $viewColumns
 					}
