@@ -79,7 +79,7 @@ try {
 							$columnDisplayName = $WorkSheet.Cells.Item($rowNo + $j, $colDisplayName).text.Trim()
 							$columnInternalName = & .\String-ToAlphaNumeric.ps1 -MainString "$($columnDisplayName)"
 							$columnInternalName = "$($columnInternalName)".Trim()
-							$f = Get-PnPField -Identity "$($columnInternalName)"
+							$f = Get-PnPField | Where-Object { $_.Title -eq "$($columnDisplayName)" -and $_.InternalName.StartsWith("$($columnInternalName)") }
 							if ($NULL -eq $f) {
 								Write-Host "Column $($columnInternalName) not found. Trying to use '$($columnDisplayName)' column instead." -ForegroundColor Yellow
 								$f = Get-PnPField -Identity "$($columnDisplayName)"

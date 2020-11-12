@@ -41,20 +41,16 @@ try {
 	#Connect to PNP Online
 	Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
 	Connect-PnPOnline -Url "$($SiteUrl)" -UseWebLogin
-
-	$ctx = Get-PnPContext
 	
 	$objExcel = New-Excel -Path "$($FileName)"
 	$Worksheet = $objExcel | Get-Worksheet -Name "Metadata"
 	$totalNoOfRecords = $Worksheet.Dimension.Rows
-	$totalNoOfColumns = $Worksheet.Dimension.Columns
 	$totalNoOfItems = $totalNoOfRecords - 1  
 	$rowNo = 3
 	$colType = 1  
 	$colDisplayName = 2
 
 	if ($totalNoOfRecords -gt 1) {  
-		$existingFields = Get-PnPField
 		
 		Write-Host "Creating field(s)..." -ForegroundColor Cyan
 		#Getting field's name and type...  
@@ -65,26 +61,33 @@ try {
 				$columnInternalName = & .\String-ToAlphaNumeric.ps1 -MainString "$($columnDisplayName)"
 				$columnInternalName = "$($columnInternalName)".Trim()
 				
-				#To verify if the object already exists
-				$newField = $existingFields | Where-Object { 
-					($_.Internalname -eq $columnInternalName) 
-					#I won't verify by existing "Display Name", because SharePoint is able to create a new field with the same existing "Display Name"
-					# -or ($_.Title -eq $columnDisplayName) 
+				$newField = $nIndex = 0
+				$tmpName = "$($columnInternalName)"
+
+				While ($NULL -ne $newField) {
+					$newField = Get-PnPField | Where-Object { 
+						($_.Internalname -eq "$($tmpName)")
+						#I won't verify by existing "Display Name", because SharePoint is able to create a new field with the same existing "Display Name"
+						# -or ($_.Title -eq $columnDisplayName) 
+					}
+					Write-Host "Field: $($newField)"
+					If ($NULL -ne $newField) {
+						$nIndex += 1
+						$tmpName = "$($columnInternalName)$($nIndex)"
+					}
 				}
-				if ($NULL -ne $newField) {
+				#To verify if the object already exists
+				
+				#Adding new field
+				Write-Verbose "Creating column '$($columnDisplayName)' with internal name: '$($tmpName)' ..."
+				
+				#Result of a field creation...
+				$fResult = Add-PnPField -InternalName "$($tmpName)" -DisplayName "$($columnDisplayName)" -Type "$($columnType)"
+				if ($NULL -eq $fResult -or $NULL -eq $fResult.Id) {
 					$arrNoCreatedFields += $columnDisplayName
 				}
 				else {
-					#Adding new field
-					Write-Verbose "Creating column '$($columnDisplayName)' with internal name: '$($columnInternalName)' ..."
-					#Result of a field creation...
-					$fResult = Add-PnPField -InternalName "$($columnInternalName)" -DisplayName "$($columnDisplayName)" -Type "$($columnType)"
-					if ($NULL -eq $fResult -or $NULL -eq $fResult.Id) {
-						$arrNoCreatedFields += $columnDisplayName
-					}
-					else {
-						$htCreatedFields.Add($columnDisplayName, $fResult.Id)
-					}
+					$htCreatedFields.Add($columnDisplayName, $fResult.Id)
 				}
 			}
 		}  
