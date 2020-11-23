@@ -7,7 +7,7 @@ Publish all draft files.
 This script will publish all draft files of a library.
 
 .EXAMPLE
-.\PublishAllFiles.ps1 [SiteUrl] [ListName] [NewListUrl]
+.\PublishAllFiles.ps1 [SiteUrl] [ListName]
 .\PublishAllFiles.ps1 "https://MyCompany.sharepoint.com/sites/MySiteCollection" "My List"
 
 .NOTES
