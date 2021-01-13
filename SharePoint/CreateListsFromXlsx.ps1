@@ -89,6 +89,9 @@ try {
 					}
 					
 					$viewColumns = @()
+					if ($listTemplate -eq "DocumentLibrary"){
+						$viewColumns += "Type"
+					}
 					$viewColumns += $firstColView
 
 					$($htFieldsToAdd.GetEnumerator() | Sort-Object -Property key).ForEach( { 
