@@ -7,17 +7,29 @@
 .EXAMPLE
 
 .NOTES
+Sources: 
+https://sharepointrelated.com/2011/11/28/get-sharepoint-lists-by-using-powershell/
+https://www.sharepointdiary.com/2016/04/get-list-fields-in-sharepoint-using-powershell.html
 
 .PARAMETER URL
 
-.PARAMETER WriteToFile
+.PARAMETER FilePath
 
 #>
+
+function GetFieldsFromList {
+  param (
+    [string] $List,
+    [string] $FilePath
+  )
+
+  $List.Fields | Select-Object Title, InternalName, Type | Export-Csv -path ".\$($List.Title).csv" -NoTypeInformation
+}
 
 param
 (
   [string] $URL,
-  [boolean] $WriteToFile = $true
+  [string] $FilePath
 )
  
 #Get all lists in farm
@@ -27,9 +39,8 @@ Add-PSSnapin Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue
 $webcount = 0
 $listcount = 0
  
-if ($WriteToFile -eq $true) {
-  $outputPath = Read-Host "Outputpath (e.g. C:directoryfilename.txt)"
-}
+$WriteToFile = ![string]::IsNullOrEmpty($FilePath)
+
 if (!$URL) {
   #Grab all webs
   $webs = (Get-SPSite -limit all | Get-SPWeb -Limit all -ErrorAction SilentlyContinue)
@@ -42,11 +53,12 @@ if ($webs.count -ge 1 -OR $webs.count -eq $null) {
     #Grab all lists in the current web
     $lists = $web.Lists
     Write-Host "Website"$web.url -ForegroundColor Green
-    if ($WriteToFile -eq $true) { Add-Content -Path $outputPath -Value "Website $($web.url)" }
+    if ($WriteToFile -eq $true) { Add-Content -Path $FilePath -Value "Website $($web.url)" }
     foreach ($list in $lists) {
       $listcount += 1
       Write-Host " – "$list.Title
-      if ($WriteToFile -eq $true) { Add-Content -Path $outputPath -Value " – $($list.Title)" }
+      if ($WriteToFile -eq $true) { Add-Content -Path $FilePath -Value " – $($list.Title)" }
+      GetFieldsFromList $list
     }
     $webcount += 1
     $web.Dispose()
