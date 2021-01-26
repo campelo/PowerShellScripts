@@ -21,7 +21,8 @@ param()
 
 try {  
     #Install PnP module
-    Install-Module SharePointPnPPowerShellOnline
+    #Install-Module SharePointPnPPowerShellOnline
+    Install-Module -Name PnP.PowerShell
     #Enable script execution (Bypass or Unrestricted)
     Set-ExecutionPolicy -ExecutionPolicy Unrestricted
 }
