@@ -30,11 +30,12 @@ function AddGroupToSite {
     )
 
     ConnectToHost $SiteUrl
+    
     DisableAccessRequest
-        
+
     $NewGroup = New-PnPGroup -Title $NewGroupName
     Set-PnPGroup -Identity $NewGroup -AddRole "Collaboration" -Owner $NewGroup.Title -AllowMembersEditMembership $False
-
+    
     $MemberGroup = Get-PnPGroup | Where-Object { $_.Title.Contains("Membres") }
     ForEach ($g in $MemberGroup) {
         Set-PnPGroup -Identity $g -AddRole "Collaboration" -RemoveRole "Modification" -Owner $NewGroup.Title -AllowMembersEditMembership $False
@@ -46,19 +47,29 @@ function AddGroupToSite {
 }
 
 function DisableAccessRequest {
-    #Get the Web
-    $Web = Get-PnPWeb
+    try {
+        #Get the Web
+        $Web = Get-PnPWeb
  
-    #Disable access requests
-    $Web.RequestAccessEmail = ""
-    $Web.SetUseAccessRequestDefaultAndUpdate($False)
-    #Disable members to share site and individual files and subfolders
-    $Web.MembersCanShare = $False
-    $Web.Update()
-    $Web.Context.ExecuteQuery()
+        #Disable access requests
+        $Web.RequestAccessEmail = ""
+        $Web.SetUseAccessRequestDefaultAndUpdate($False)
+        #Disable members to share site and individual files and subfolders
+        $Web.MembersCanShare = $False
+        $Web.Update()
+        $Web.Context.ExecuteQuery()    
+    }
+    catch {
+        write-host "Error: $($_.Exception.Message)" -foregroundcolor Red
+    }
+    
 }
 
 function ConnectToHost {
+    param (
+        [Parameter(Mandatory, Position = 1)]
+        [string] $SiteUrl
+    )
     try {
         #Connect to PNP Online
         Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
@@ -103,8 +114,6 @@ for ($i = 1; $i -le $totalNoOfItems; $i++) {
         catch {
             Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
         }
+        DisconnectHost
     }
 }
-    
-
-DisconnectHost

@@ -82,7 +82,21 @@ try {
 				Write-Verbose "Creating column '$($columnDisplayName)' with internal name: '$($tmpName)' ..."
 				
 				#Result of a field creation...
-				$fResult = Add-PnPField -InternalName "$($tmpName)" -DisplayName "$($columnDisplayName)" -Type "$($columnType)"
+				# $fResult = Add-PnPField -InternalName "$($tmpName)" -DisplayName "$($columnDisplayName)" -Type "$($columnType)"
+				
+				$guid = [guid]::NewGuid().ToString()
+				$xml = '<Field DisplayName="' + $columnDisplayName + '" Name="' + $tmpName + '" ID="{' + $guid + '}" Type="' + $columnType + '" ' 
+
+				if ($columnType -eq "Note") {
+					$xml += ' RichText="TRUE" RichTextMode="FullHtml" '
+				}
+				elseif ($columnType -eq "DateTime") {
+					$xml += ' Format="DateOnly" '
+				}
+				$xml += ' />'
+
+				$fResult = Add-PnPFieldFromXml -FieldXml $xml
+
 				if ($NULL -eq $fResult -or $NULL -eq $fResult.Id) {
 					$arrNoCreatedFields += $columnDisplayName
 				}
