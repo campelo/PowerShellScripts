@@ -66,6 +66,9 @@ try {
 				if (![string]::IsNullOrEmpty($listDisplayName)) {	
 					$listInternalName = & .\String-ToAlphaNumeric.ps1 -MainString "$($listDisplayName)"
 					$listInternalName = "$($listInternalName)".Trim()
+					if ($listInternalName.Length -gt 50){
+						$listInternalName = $listInternalName.Substring(0, 50)
+					}
 
 					#Creating list...
 					Write-Verbose "Creating $($listOrLib) $($listDisplayName)"
