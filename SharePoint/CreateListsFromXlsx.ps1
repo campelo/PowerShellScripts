@@ -66,7 +66,7 @@ try {
 				if (![string]::IsNullOrEmpty($listDisplayName)) {	
 					$listInternalName = & .\String-ToAlphaNumeric.ps1 -MainString "$($listDisplayName)"
 					$listInternalName = "$($listInternalName)".Trim()
-					if ($listInternalName.Length -gt 50){
+					if ($listInternalName.Length -gt 50) {
 						$listInternalName = $listInternalName.Substring(0, 50)
 					}
 
@@ -92,7 +92,7 @@ try {
 					}
 					
 					$viewColumns = @()
-					if ($listTemplate -eq "DocumentLibrary"){
+					if ($listTemplate -eq "DocumentLibrary") {
 						$viewColumns += "Type"
 					}
 					$viewColumns += $firstColView
