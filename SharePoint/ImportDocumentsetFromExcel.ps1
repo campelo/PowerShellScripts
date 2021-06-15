@@ -306,6 +306,9 @@ function ExtractExcelInformations {
 
   $objExcel = New-Excel -Path "$($FileName)"
   $Worksheet = $objExcel.Workbook.Worksheets[1]
+  if(!$?){
+    $Worksheet = $objExcel | Get-Worksheet -Name "Adresses"
+  }
   $totalNoOfRecords = $Worksheet.Dimension.Rows
   $totalNoOfItems = $totalNoOfRecords - 1
   $startRow = 3
