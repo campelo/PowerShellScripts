@@ -1,14 +1,20 @@
 ﻿<#
 
 .SYNOPSIS
+.\AddTermToStore.ps1 "https://[ MyTenantName].sharepoint.com/site/[MySiteUrl]" [GroupGuid] [TermGuid] [FileName]
 
 .DESCRIPTION
 
 .EXAMPLE
+.\AddTermToStore.ps1 "https://mycompany.sharepoint.com/site/mysite" "01234567-89ab-cdef-0123-456789abcdef" "12345678-89ab-cdef-0123-456789abcdef" .\filename.csv
+
+.PARAMETER SiteUrl
+
+.PARAMETER TermGroupGUID
+
+.PARAMETER TermSetGUID
 
 .PARAMETER FileName
-
-.PARAMETER GroupGUID
 
 #>
 
