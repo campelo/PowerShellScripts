@@ -2,3 +2,4 @@
 /SharePoint/*.xlsx
 !/SharePoint/empty.xlsx
 !/SharePoint/sample.xlsx
+SharePoint/allTermsSets.txt
