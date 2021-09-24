@@ -59,14 +59,15 @@ function CreateSite {
         [string] $SiteUrl
     )
     Return
-    $url = "https://MyCompany.sharepoint.com/sites/MySite";
+    $myCompany = "MyCompany";
+    $url = "https://$myCompany.sharepoint.com/sites/MySite";
     $title = "My Site Title";
     $modifiedTitle = $($title -replace ",", "_")
     $ownerGroup = "Owners of $modifiedTitle"; #"Propriétaires de $modifiedTitle";
     $groupeMembre = "$modifiedTitle - Members"; #"$modifiedTitle - Membres";
     
-    $createurID = "first.lastname@MyCompany.onmicrosoft.com";
-    $adminSiteUrl = "https://MyCompany-admin.sharepoint.com";
+    $createurID = "first.lastname@$myCompany.onmicrosoft.com";
+    $adminSiteUrl = "https://$myCompany-admin.sharepoint.com";
     $template = "STS#3"; #Modern Team Site without O365 group
     $timezone = 10;
     $lcid = 1036;
