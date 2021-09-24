@@ -30,11 +30,11 @@ param (
 try {  
     #Connect to PNP Online
     Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
-    Connect-PnPOnline -Url $($SiteUrl) -UseWebLogin
+    Connect-PnPOnline -Url $($SiteUrl) -Interactive
 
     #Submiting query
     Write-Host "Finding all term usages... '$($TermId)'..." -ForegroundColor Cyan
-    Submit-PnPSearchQuery -Query "$($TermId)" -CollapseSpecification "SPSiteUrl:1" -RelevantResults -SelectProperties "SPSiteUrl" | select SPSiteUrl
+    Submit-PnPSearchQuery -Query "$($TermId)" -CollapseSpecification "SPSiteUrl:1" -RelevantResults -SelectProperties "SPSiteUrl" | Select-Object SPSiteUrl
 }
 catch {
     write-host "Error: $($_.Exception.Message)" -foregroundcolor Red

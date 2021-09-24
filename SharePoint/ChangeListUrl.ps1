@@ -36,7 +36,7 @@ param (
 try {  
     #Connect to PNP Online
     Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
-    Connect-PnPOnline -Url $($SiteUrl) -UseWebLogin
+    Connect-PnPOnline -Url $($SiteUrl) -Interactive
  
     #Get the List
     Write-Host "Getting identity from list/library '$($ListName)'..." -ForegroundColor Cyan

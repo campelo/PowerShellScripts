@@ -30,7 +30,7 @@ try {
     $OriginalSiteFileName = "$($FileName).xml"
 
     Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
-    Connect-PnPOnline -Url "$($SiteUrl)" -UseWebLogin
+    Connect-PnPOnline -Url "$($SiteUrl)" -Interactive
 
     Write-Host "Exporting site's template to '$($OriginalSiteFileName)' file..." -ForegroundColor Cyan
     #Get-PnPProvisioningTemplate -Out .\$OriginalSiteFileName -PersistBrandingFiles -ExcludeHandlers SiteSecurity, PropertyBagEntries, Navigation

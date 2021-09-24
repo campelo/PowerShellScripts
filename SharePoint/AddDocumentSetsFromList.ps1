@@ -42,7 +42,7 @@ param (
 try {
   #Connect to PNP Online
   Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
-  Connect-PnPOnline -Url "$($SiteUrl)" -UseWebLogin
+  Connect-PnPOnline -Url "$($SiteUrl)" -Interactive
 
   $filePath = Join-Path (Get-Location).Path $($FileName)
   $lines = [System.IO.File]::ReadLines($($filePath), [System.Text.Encoding]::Default) | Sort-Object -Property @{Expression = { $_.Trim() } } -Unique 

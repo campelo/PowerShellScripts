@@ -39,7 +39,7 @@ try {
                 foreach ($field in $taxonomyfields) {
                     $xml = [XML]$field.SchemaXml
                     $TermSetId = ($xml | Select-Xml "//Name[text()='TermSetId']/following-sibling::Value/text()").Node.Value
-                    "TermSetId: $($TermSetId)  => SiteUrl: $($site.Url)  => $($list.Title)"  >> .\allTermsSetsOthers.txt
+                    "TermSetId: $($TermSetId)  => SiteUrl: $($site.Url)  => $($list.Title)"  >> .\allTermsSets.txt
                 }
             }
         }

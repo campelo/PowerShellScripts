@@ -43,13 +43,13 @@ try {
 
     #Connect to PNP Online
     Write-Host "Connecting to site '$($Site1)'..." -ForegroundColor Cyan
-    Connect-PnPOnline -UseWebLogin -Url $($Site1)
+    Connect-PnPOnline -Interactive -Url $($Site1)
     $fields = Get-PnPField -List $($List1) | Where-Object { $_.CanBeDeleted }
     $items = Get-PnPListItem -List $($List1)
 
     #Connect to PNP Online
     Write-Host "Connecting to site '$($Site2)'..." -ForegroundColor Cyan
-    Connect-PnPOnline -UseWebLogin -Url $($Site2)
+    Connect-PnPOnline -Interactive -Url $($Site2)
     foreach ($it in $items) {
         $value = @{}
         $value.Add("Title", $it['Title'])

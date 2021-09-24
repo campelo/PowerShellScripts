@@ -47,7 +47,7 @@ function ConnectToHost {
     try {
         #Connect to PNP Online
         Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
-        Connect-PnPOnline -UseWebLogin -Url $($SiteUrl)
+        Connect-PnPOnline -Interactive -Url $($SiteUrl)
     }
     catch {
         write-host "Error: $($_.Exception.Message)" -foregroundcolor Red

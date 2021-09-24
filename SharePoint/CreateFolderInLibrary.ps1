@@ -40,7 +40,7 @@ Try {
   $ListURL = "/" + $($($FullListUrl).TrimEnd("/").Split("/")[-3..-1] -Join "/")
 
   Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
-  Connect-PnPOnline -Url "$($SiteUrl)" -UseWebLogin
+  Connect-PnPOnline -Url "$($SiteUrl)" -Interactive
 
   Write-Host "Set up the context..." -ForegroundColor Cyan
   $Context = New-Object Microsoft.SharePoint.Client.ClientContext($SiteUrl)

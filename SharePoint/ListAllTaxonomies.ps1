@@ -7,7 +7,7 @@ param (
 try {
     # foreach ($item in $sitesdata) {
     Write-Host "Started Traversing Site " $($SiteUrl) -ForegroundColor Yellow
-    Connect-PnPOnline -URL $($SiteUrl) -useWebLogin
+    Connect-PnPOnline -URL $($SiteUrl) -Interactive
     $site = Get-PnPSite
     if ($site.Url -eq $($SiteUrl)) {   
         $lists = Get-PnPList

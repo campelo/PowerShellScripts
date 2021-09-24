@@ -3,7 +3,7 @@ $AdminCenterURL = "https://xxx-admin.sharepoint.com"
  
 #Connect to PnP Online
 #Connect-PnPOnline -Url $AdminCenterURL -Credentials (Get-Credential)
-Connect-PnPOnline -Url $AdminCenterURL -UseWebLogin
+Connect-PnPOnline -Url $AdminCenterURL -Interactive
  
 #Export Term Store Data to XML
 Export-PnPTermGroupToXml -Out "C:\Temp\TermStoreData.xml"

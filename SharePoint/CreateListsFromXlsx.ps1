@@ -36,7 +36,7 @@ try {
 	
 	#Connect to PNP Online
 	Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
-	Connect-PnPOnline -Url "$($SiteUrl)" -UseWebLogin
+	Connect-PnPOnline -Url "$($SiteUrl)" -Interactive
 
 	$ctx = Get-PnPContext
 	

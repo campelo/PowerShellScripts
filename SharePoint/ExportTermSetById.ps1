@@ -5,7 +5,7 @@ $FilePath="C:\Temp\TermsetData.txt"
  
 #Connect to PnP Online
 #Connect-PnPOnline -Url $AdminCenterURL -Credentials (Get-Credential)
-Connect-PnPOnline -Url $AdminCenterURL -UseWebLogin
+Connect-PnPOnline -Url $AdminCenterURL -Interactive
  
 #Export Term set
 Export-PnPTaxonomy -TermSetId $TermsetID -Path $FilePath

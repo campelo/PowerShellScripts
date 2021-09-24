@@ -39,7 +39,7 @@ try {
     $FileName = "Termsets.csv" #"$($TermGroup)_$($TermSet).csv"
 
     Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
-    Connect-PnPOnline -Url "$($SiteUrl)" -UseWebLogin
+    Connect-PnPOnline -Url "$($SiteUrl)" -Interactive
 
     Write-Host "Finding site's terms set..." -ForegroundColor Cyan
     $termStores = Get-PnPTerm -TermGroup $($TermGroup) -TermSet $($TermSet) -IncludeChildTerms 

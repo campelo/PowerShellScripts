@@ -31,7 +31,7 @@ param (
 try {
     #Connect to PnP Online
     Write-Host "Connecting to site '$($SiteUrl)'..." -ForegroundColor Cyan
-    Connect-PnPOnline -Url $SiteUrl -UseWebLogin
+    Connect-PnPOnline -Url $SiteUrl -Interactive
 
     #Get all files from the document library
     $ListItems = Get-PnPListItem -List $($ListName) -PageSize 2000 | Where-Object { $_.FileSystemObjectType -eq "File" }
