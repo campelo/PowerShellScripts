@@ -18,7 +18,7 @@
   Specifies file that has a list of all documentset names to create.
 
 .EXAMPLE
-  .\AddDocumentSetFromList.ps1 "https://MyCompany.sharepoint.com/sites/MySiteCollection" "My Library" "DocumentSet Name" ".\FileName.txt"
+  .\AddDocumentSetsFromList.ps1 "https://MyCompany.sharepoint.com/sites/MySiteCollection" "My Library" "DocumentSet Name" ".\FileName.txt"
 
 .NOTES
   
